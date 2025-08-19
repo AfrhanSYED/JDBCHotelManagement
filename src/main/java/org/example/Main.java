@@ -1,9 +1,6 @@
 package org.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -42,13 +39,13 @@ public class Main {
                 switch (choice){
                     case 1:reserveRoom(con,sc);
                             break;
-//                    case 2:viewReservation(con); break;
+                    case 2:viewReservation(con); break;
 //                    case 3:getRoomNumber(con,sc); break;
 //                    case 4:updateDetails(con,sc); break;
 //                    case 5:deleteReservation(con,sc); break;
 //                    case 0:exit(); return;
                     default:
-                        System.out.println("Invalid Input Try agaim!!");
+                        System.out.println("Invalid Input Try again!!");
                 }
 
 
@@ -87,7 +84,7 @@ public class Main {
                 int rowsAffected= stmt.executeUpdate(sqlQuery);
                 if(rowsAffected>0)
                 {
-                    System.out.println("Reservation Successfull!!");
+                    System.out.println("Reservation Successful!!");
                 }
                 else{
                     System.out.println("Reservation failed");
@@ -97,6 +94,43 @@ public class Main {
 
         }catch (SQLException e){
             System.out.println(e.getMessage());
+        }
+
+    }
+
+    private static void viewReservation(Connection con){
+
+        String sqlQuery="select guest_id,guest_name,room_number,contact_num,reservation_date " +
+                        "from reservation; ";
+
+        try(Statement stmt= con.createStatement()){
+
+            ResultSet rs=stmt.executeQuery(sqlQuery);
+
+            System.out.println("Current Reservations: ");
+            System.out.println("+---------------------+--------------------------+--------------------+-----------------------------------+--------------------------------+");
+            System.out.println("|     Guest_ID        |         Guest_Name       |      Room Number   |         Contact Number            |         Reservation Date       |");
+            System.out.println("+---------------------+--------------------------+--------------------+-----------------------------------+--------------------------------+");
+
+            while(rs.next())
+            {
+                int guest_id=rs.getInt("guest_id");
+                String guest_name=rs.getString("guest_name");
+                int room_number=rs.getInt("room_number");
+                String contact_num=rs.getString("contact_num");
+                String reservation_date=rs.getTimestamp("reservation_date").toString();
+
+                System.out.printf("| %-21d | %-27s | %-20d | %-35s | %-32s |",
+                          guest_id,guest_name,room_number,contact_num,reservation_date);
+
+
+
+            }
+
+            System.out.println("+---------------------+--------------------------+--------------------+-----------------------------------+--------------------------------+");
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
     }
