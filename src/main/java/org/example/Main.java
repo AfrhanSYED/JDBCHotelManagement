@@ -40,7 +40,7 @@ public class Main {
                     case 1:reserveRoom(con,sc);
                             break;
                     case 2:viewReservation(con); break;
-//                    case 3:getRoomNumber(con,sc); break;
+                    case 3:getRoomNumber(con,sc); break;
 //                    case 4:updateDetails(con,sc); break;
 //                    case 5:deleteReservation(con,sc); break;
 //                    case 0:exit(); return;
@@ -133,5 +133,41 @@ public class Main {
             throw new RuntimeException(e);
         }
 
+
     }
+    private static void getRoomNumber(Connection con,Scanner sc)
+    {
+        try{
+        System.out.println("Enter the reservation Id : ");
+        int guest_id=sc.nextInt();
+
+        System.out.println("Enter the name : ");
+
+        String guest_name=sc.nextLine();
+
+        String sqlQuery="select room_number from reservation " +
+                "where guest_id="+guest_id+" and guest_name = '"+guest_name+"'";
+
+        try(Statement stmt=con.createStatement()){
+
+            ResultSet rs=stmt.executeQuery(sqlQuery);
+            if(rs.next())
+            {
+                int room_number=rs.getInt("room_number");
+
+                System.out.println("The room number for "+guest_id+" Name : "+guest_name+ " is:"+room_number);
+            }
+            else {
+                System.out.println("No resrvation found!!");
+            }
+
+
+        }
+
+        }catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
 }
